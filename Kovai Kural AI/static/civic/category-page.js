@@ -1,0 +1,5 @@
+const slug=new URLSearchParams(location.search).get('slug');let category=null;
+const escCat=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderCategory(){if(!category)return;const name=document.getElementById('categoryName');name.textContent=window.KK.t(`cat.${category.slug}`);document.getElementById('categoryDescription').textContent=window.KK.t(`desc.${category.slug}`);document.getElementById('categoryIcon').textContent=category.icon;document.title=`${name.textContent} · Kovai Kural`;document.getElementById('startCategorySurvey').onclick=()=>location.href=`index.html?category=${encodeURIComponent(category.slug)}#report`;}
+if(slug)fetch(`/api/categories/${encodeURIComponent(slug)}`).then(r=>r.json()).then(data=>{if(data.error)throw new Error();category=data;document.getElementById('categoryCount').textContent=data.count;renderCategory();}).catch(()=>{document.getElementById('categoryName').textContent=window.KK.t('noData');});
+document.addEventListener('kk:language',renderCategory);
